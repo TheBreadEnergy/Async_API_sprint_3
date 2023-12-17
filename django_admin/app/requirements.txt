@@ -1,6 +1,7 @@
 django==3.2
 flake8==4.0
 psycopg==3.1.10
+psycopg2==2.9.9
 python-dotenv==1.0.0
 django_split_settings==1.2.0
 psycopg2-binary==2.9
