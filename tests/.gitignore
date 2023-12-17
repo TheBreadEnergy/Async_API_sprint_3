@@ -427,7 +427,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-.idea/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
@@ -485,3 +484,5 @@ cython_debug/
 
 # Android studio 3.1+ serialized cache file
 
+
+.pytest_cache/
