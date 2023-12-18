@@ -51,6 +51,9 @@
       "genre": {
         "type": "keyword"
       },
+      "file": {
+        "type": "text"
+      },
       "title": {
         "type": "text",
         "analyzer": "ru_en",
