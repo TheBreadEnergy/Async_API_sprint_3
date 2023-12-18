@@ -1,8 +1,8 @@
 version: '3'
 services:
-  django-api:
+  django-admin:
     build: django_admin
-    image: app-django-api:dev
+    image: app-django-admin:dev
     volumes:
       - static:/opt/app/static
     depends_on:
@@ -36,7 +36,7 @@ services:
     volumes:
       - static:/data/static/:ro
     depends_on:
-      - django-api
+      - django-admin
     ports:
       - "81:80"
 
@@ -70,10 +70,23 @@ services:
       - envs/.env.etl
     depends_on:
       - postgres
-      - django-api
+      - django-admin
       - proxy
       - redis
       - elastic
+
+  s3_storage:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_storage:/data
+    env_file:
+      - ./envs/.env.s3
+    command: server --console-address ":9001" /data
+
+
 
 volumes:
   static:
@@ -82,4 +95,5 @@ volumes:
   elastic-data:
   films-cache:
   pg-cache:
+  minio_storage:
 

@@ -485,3 +485,9 @@ cython_debug/
 
 # Android studio 3.1+ serialized cache file
 
+.DS_Storage/
+./envs/.env.django
+./envs/.env.s3
+./envs/.env.api.films
+./envs/.env.database
+./envs/.env.etl

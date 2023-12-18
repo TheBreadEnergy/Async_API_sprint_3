@@ -25,6 +25,13 @@ INTERNAL_IPS = (
     else ["127.0.0.1"]
 )
 
+AWS_ACCESS_KEY_ID = os.environ.get("S3_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("S3_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("S3_STORAGE_BUCKET_NAME")
+AWS_S3_ENDPOINT_URL = os.environ.get("S3_ENDPOINT_URL")
+
+FILE_SERVICE_URL = os.environ.get("FILE_SERVICE_URL")
+
 include("components/apps.py")
 include("components/database.py")
 include("components/templates.py")
