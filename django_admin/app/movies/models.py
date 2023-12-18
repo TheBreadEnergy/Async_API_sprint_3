@@ -5,8 +5,6 @@ from django.db import models
 from django.db.models import FileField, constraints
 from django.utils.translation import gettext_lazy as _
 
-from movies.storage import CustomStorage
-
 
 class TimeStampledMixin(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -52,7 +50,7 @@ class Filmwork(UUIDMixin, TimeStampledMixin):
     )
     genres = models.ManyToManyField(Genre, through="GenreFilmwork")
     persons = models.ManyToManyField("Person", through="PersonFilmwork")
-    file = FileField(storage=CustomStorage(), null=True)
+    file = FileField(upload_to="uploads/", null=True)
 
     def __str__(self):
         return self.title

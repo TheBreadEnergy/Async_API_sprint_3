@@ -25,11 +25,7 @@ RUN chmod +x docker-entrypoint.sh  && mkdir /opt/app/static
 EXPOSE 8000
 
 VOLUME /opt/app/static
-VOLUME /opt/app/uploads
-
 RUN chown -R django:django /opt/app/static
-
-RUN chown -R django:django /opt/app/uploads
 
 USER django
 ENTRYPOINT ["/opt/app/docker-entrypoint.sh"]
