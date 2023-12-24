@@ -9,7 +9,7 @@ from src.storage.base import Storage
 from starlette.responses import StreamingResponse
 
 
-class FilePostgresRepository(PostgresRepository[File, FileCreateDto]):
+class FileRepository(PostgresRepository[File, FileCreateDto]):
     ...
 
 
@@ -22,6 +22,16 @@ class FileServiceABC(ABC):
     def download_file(
         self, bucket_name: str, short_name: str
     ) -> StreamingResponse | None:
+        ...
+
+
+class FileMetaServiceABC(ABC):
+    @abstractmethod
+    def get_files(self, *, skip: int, offset: int) -> list[File]:
+        ...
+
+    @abstractmethod
+    def get_file_by_name(self, *, name: str) -> File:
         ...
 
 
@@ -55,3 +65,14 @@ class FileService(FileServiceABC):
             filename=file_meta.filename,
             file_type=file_meta.file_type,
         )
+
+
+class FileMetaService(FileMetaServiceABC):
+    def __init__(self, repository: FileRepository):
+        self._repository = repository
+
+    async def get_files(self, *, skip: int, offset: int) -> list[File]:
+        return await self._repository.gets(skip=skip, limit=offset)
+
+    async def get_file_by_name(self, *, name: str) -> File:
+        return await self._repository.get_by_name(short_name=name)

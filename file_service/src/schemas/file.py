@@ -4,11 +4,14 @@ from pydantic import BaseModel
 from src.schemas.base import IdentifiableMixin
 
 
-class FileResponseDto(IdentifiableMixin):
+class FileBaseDto(IdentifiableMixin):
     filename: str
-    url: str
-    size: int
+    short_name: str
     file_type: str | None
+
+
+class FileResponseDto(FileBaseDto):
+    size: int
     created: datetime
 
 
