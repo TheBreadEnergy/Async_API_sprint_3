@@ -55,7 +55,6 @@ class FileService(FileServiceABC):
             url=f"{file.filename}",
         )
         file_response = await self._repository.insert(obj=file_meta)
-        print("file response none", file_response)
         return file_response
 
     async def download_file(self, bucket_name: str, short_name: str):

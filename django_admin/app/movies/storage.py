@@ -9,7 +9,7 @@ from django.utils.deconstruct import deconstructible
 class CustomStorage(Storage):
     def _save(self, name, content: InMemoryUploadedFile):
         r = requests.post(
-            FILE_SERVICE_URL,
+            f"{FILE_SERVICE_URL}/",
             files={"file": (content.name, content, content.content_type)},
         )
         print(r.json())

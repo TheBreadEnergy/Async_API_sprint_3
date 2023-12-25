@@ -60,7 +60,6 @@ class PostgresRepository(Repository, Generic[ModelType, CreateSchemaType]):
         database_obj = self._model(**raw_obj)
         self._db.add(database_obj)
         await self._db.commit()
-        print("in database", database_obj)
         return database_obj
 
     async def delete(self, *, entity_id: Any) -> None:
@@ -88,6 +87,7 @@ class CachedRepository(
     async def get(self, *, entity_id: Any) -> ModelType | None:
         key = f"{self._model.__name__}_{entity_id}"
         entity = await self._cache.get(key=key)
+
         if not entity:
             entity = await self._repository.get(entity_id=entity_id)
             if entity:
