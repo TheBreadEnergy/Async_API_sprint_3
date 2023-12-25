@@ -1,3 +1,4 @@
+import json
 from abc import ABC, abstractmethod
 from typing import Generic, Type, TypeVar
 
@@ -25,7 +26,8 @@ class RedisCache(Cache, Generic[ModelType]):
         document = await self._redis.get(key)
         if not document:
             return None
-        return self._model.model_validate_json(document)
+        return self._model(**json.loads(document))
 
     async def put(self, *, key: str, value: ModelType):
-        await self._redis.set(key, value)
+        document = value.to_dict()
+        await self._redis.set(key, json.dumps(document))

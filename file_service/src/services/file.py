@@ -27,7 +27,7 @@ class FileServiceABC(ABC):
 
 class FileMetaServiceABC(ABC):
     @abstractmethod
-    def get_files(self, *, skip: int, offset: int) -> list[File]:
+    def get_files(self, *, skip: int, limit: int) -> list[File]:
         ...
 
     @abstractmethod
@@ -36,30 +36,34 @@ class FileMetaServiceABC(ABC):
 
 
 class FileService(FileServiceABC):
-    def __init__(self, repository: PostgresRepository[File], storage: Storage):
+    def __init__(
+        self, repository: PostgresRepository[File, FileCreateDto], storage: Storage
+    ):
         self._repository = repository
         self._storage = storage
 
     async def upload_file(self, bucket_name: str, file: UploadFile) -> File:
         short_name = shortuuid.uuid()
-        result: FileUploadDto = await self._storage.save(
-            file=file, bucket=bucket_name, path=short_name
+        _: FileUploadDto = await self._storage.save(
+            file=file, bucket=bucket_name, path=file.filename
         )
         file_meta = FileCreateDto(
             filename=file.filename,
             short_name=short_name,
             size=file.size,
             file_type=file.content_type,
-            url=result.url,
+            url=f"{file.filename}",
         )
         file_response = await self._repository.insert(obj=file_meta)
+        print("file response none", file_response)
         return file_response
 
     async def download_file(self, bucket_name: str, short_name: str):
         file_meta: File = await self._repository.get_by_name(short_name=short_name)
         if not file_meta:
             return None
-        return self._storage.get_file(
+
+        return await self._storage.get_file(
             bucket=bucket_name,
             path=file_meta.url,
             filename=file_meta.filename,
@@ -71,8 +75,8 @@ class FileMetaService(FileMetaServiceABC):
     def __init__(self, repository: FileRepository):
         self._repository = repository
 
-    async def get_files(self, *, skip: int, offset: int) -> list[File]:
-        return await self._repository.gets(skip=skip, limit=offset)
+    async def get_files(self, *, skip: int, limit: int) -> list[File]:
+        return await self._repository.gets(skip=skip, limit=limit)
 
     async def get_file_by_name(self, *, name: str) -> File:
         return await self._repository.get_by_name(short_name=name)

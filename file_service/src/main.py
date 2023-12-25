@@ -11,7 +11,6 @@ from src.api.v1 import files
 from src.core.config import settings
 from src.core.logger import LOGGING
 from src.db import redis
-from src.db.database import create_database
 from src.dependencies.main import setup_dependencies
 from src.storage import minio, session_client
 
@@ -26,7 +25,6 @@ async def lifespan(_: FastAPI):
         secure=False,
     )
     session_client.client_session = aiohttp.ClientSession()
-    await create_database()
     yield
     await redis.redis.close()
     await session_client.client_session.close()

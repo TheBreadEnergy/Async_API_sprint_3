@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 
 from aiohttp import ClientSession
@@ -30,6 +31,7 @@ class MinioStorage(Storage):
             length=1,
             part_size=10 * 1024 * 1024,
         )
+        logging.info(response.location)
         file_response = FileUploadDto(
             url=response.location,
             bucket_name=response.bucket_name,

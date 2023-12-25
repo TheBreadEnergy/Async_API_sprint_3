@@ -18,14 +18,26 @@ class Settings(BaseSettings):
         env="DESCRIPTION",
     )
     version: str = Field("1.0.0", alias="VERSION", env="VERSION")
-    redis_host: str = Field(..., alias="REDIS_HOST", env="REDIS_HOST")
-    redis_port: int = Field(..., alias="REDIS_PORT", env="REDIS_PORT")
+    redis_host: str = Field("127.0.0.1", alias="REDIS_HOST", env="REDIS_HOST")
+    redis_port: int = Field("6379", alias="REDIS_PORT", env="REDIS_PORT")
     base_dir: str = os.path.dirname(os.path.abspath(__file__))
-    postgres_conn: PostgresDsn = Field(..., alias="POSTGRES_CONN", env="POSTGRES_CONN")
-    s3_bucket: str = Field(..., alias="S3_BUCKET", env="S3_BUCKET")
-    endpoint: str = Field(..., alias="MINIO_ENDPOINT", env="MINIO_ENDPOINT")
-    access_key: str = Field(..., alias="MINIO_ACCESS_KEY", env="MINIO_ACCESS_KEY")
-    secret_key: str = Field(..., alias="MINIO_SECRET_KEY", env="MINIO_SECRET_KEY")
+    postgres_conn: PostgresDsn = Field(
+        "postgresql+psycopg://app:123qwe@localhost:5432/movie_database",
+        alias="POSTGRES_CONN",
+        env="POSTGRES_CONN",
+    )
+    s3_bucket: str = Field("movies", alias="S3_BUCKET", env="S3_BUCKET")
+    endpoint: str = Field(
+        "localhost:9000", alias="MINIO_ENDPOINT", env="MINIO_ENDPOINT"
+    )
+    access_key: str = Field(
+        "slGmrA9lbv0TKyGtqU4I", alias="MINIO_ACCESS_KEY", env="MINIO_ACCESS_KEY"
+    )
+    secret_key: str = Field(
+        "4sjc7xUdS4543TSFqPn7famG6I4c0mUjGnlMJtHW",
+        alias="MINIO_SECRET_KEY",
+        env="MINIO_SECRET_KEY",
+    )
 
 
 settings = Settings()

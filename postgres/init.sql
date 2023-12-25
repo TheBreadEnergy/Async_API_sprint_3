@@ -1,5 +1,15 @@
 CREATE SCHEMA IF NOT EXISTS content;
+CREATE TABLE IF NOT EXISTS content.files(
+    id uuid primary key,
+    url varchar not null,
+    filename varchar not null,
+    size integer not null,
+    file_type varchar(100),
+    short_name varchar(24) not null,
+    created timestamp with time zone
+);
 
+CREATE UNIQUE INDEX files_short_name_idx on content.files(short_name);
 --
 -- CREATE TABLE IF NOT EXISTS content.film_work (
 --     id uuid primary key,

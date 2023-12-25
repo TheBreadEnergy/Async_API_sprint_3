@@ -19,12 +19,12 @@ class FileCreateDto(BaseModel):
     short_name: str
     filename: str
     size: int
-    url: str
+    url: str | None
     file_type: str | None
 
 
 class FileUploadDto(BaseModel):
-    url: str
-    bucket_name: str
-    object_name: str
-    version: str
+    url: str | None
+    bucket_name: str | None
+    object_name: str | None
+    version_id: str | None

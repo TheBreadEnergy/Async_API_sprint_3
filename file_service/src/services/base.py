@@ -46,12 +46,12 @@ class PostgresRepository(Repository, Generic[ModelType, CreateSchemaType]):
         return results.scalars().all()
 
     async def get(self, *, entity_id: int) -> ModelType:
-        statement = select(self._model).where(self._model.c.id == entity_id)
+        statement = select(self._model).where(self._model.id == entity_id)
         results = await self._db.execute(statement)
         return results.scalar_one_or_none()
 
     async def get_by_name(self, *, short_name: str) -> ModelType:
-        statement = select(self._model).where(self._model.c.short_name == short_name)
+        statement = select(self._model).where(self._model.short_name == short_name)
         results = await self._db.execute(statement)
         return results.scalar_one_or_none()
 
@@ -60,6 +60,7 @@ class PostgresRepository(Repository, Generic[ModelType, CreateSchemaType]):
         database_obj = self._model(**raw_obj)
         self._db.add(database_obj)
         await self._db.commit()
+        print("in database", database_obj)
         return database_obj
 
     async def delete(self, *, entity_id: Any) -> None:
@@ -67,10 +68,13 @@ class PostgresRepository(Repository, Generic[ModelType, CreateSchemaType]):
         await self._db.execute(statement)
 
 
-class CachedRepository(PostgresRepository[ModelType], Generic[ModelType]):
+class CachedRepository(
+    PostgresRepository[ModelType, CreateSchemaType],
+    Generic[ModelType, CreateSchemaType],
+):
     def __init__(
         self,
-        repository: PostgresRepository[ModelType],
+        repository: PostgresRepository[ModelType, CreateSchemaType],
         cache: Cache,
         model: Type[ModelType],
     ):
@@ -87,7 +91,7 @@ class CachedRepository(PostgresRepository[ModelType], Generic[ModelType]):
         if not entity:
             entity = await self._repository.get(entity_id=entity_id)
             if entity:
-                await self._cache.put(key=key, entity=entity)
+                await self._cache.put(key=key, value=entity)
         return entity
 
     async def get_by_name(self, *, short_name: str) -> ModelType | None:
@@ -96,11 +100,11 @@ class CachedRepository(PostgresRepository[ModelType], Generic[ModelType]):
         if not entity:
             entity = await self._repository.get_by_name(short_name=short_name)
             if entity:
-                await self._cache.put(key=key, entity=entity)
+                await self._cache.put(key=key, value=entity)
         return entity
 
     async def insert(self, *, obj: CreateSchemaType):
-        await self._repository.insert(obj=obj)
+        return await self._repository.insert(obj=obj)
 
     async def delete(self, *, entity_id: Any):
         await self._repository.delete(entity_id=entity_id)

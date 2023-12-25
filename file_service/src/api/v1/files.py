@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile
 from src.core.config import settings
 from src.schemas.file import FileBaseDto, FileResponseDto
-from src.services.file import FileRepository, FileServiceABC
+from src.services.file import FileMetaServiceABC, FileServiceABC
 from starlette.responses import StreamingResponse
 
 router = APIRouter()
@@ -19,11 +19,11 @@ router = APIRouter()
     response_description="Информация о файлах",
 )
 async def list_files_meta(
-    file_repository: FileRepository = Depends(),
+    file_repository: FileMetaServiceABC = Depends(),
     skip: Annotated[int, Query(description="Items to skip", ge=0)] = 0,
     limit: Annotated[int, Query(description="Pagination page size", ge=1)] = 10,
 ):
-    films = await file_repository.gets(skip=skip, limit=limit)
+    films = await file_repository.get_files(skip=skip, limit=limit)
     if not films:
         return list()
     return films
@@ -38,9 +38,9 @@ async def list_files_meta(
     response_description="Информация о файле",
 )
 async def get_file_meta(
-    short_name: str, file_repository: FileRepository = Depends()
+    short_name: str, file_repository: FileMetaServiceABC = Depends()
 ) -> FileResponseDto:
-    film = await file_repository.get_by_name(short_name=short_name)
+    film = await file_repository.get_file_by_name(name=short_name)
     if not film:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail="file meta not found"
@@ -76,4 +76,5 @@ async def download_file(
 async def upload_file(
     file: UploadFile, file_service: FileServiceABC = Depends()
 ) -> FileResponseDto:
-    return await file_service.upload_file(settings.s3_bucket, file)
+    response = await file_service.upload_file(settings.s3_bucket, file)
+    return response
