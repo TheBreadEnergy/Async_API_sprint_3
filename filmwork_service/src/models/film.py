@@ -11,6 +11,7 @@ class UUIDMixin(BaseModel):
 
 class Film(UUIDMixin):
     title: str
+    file: str | None
     imdb_rating: float | None
     description: str | None = None
     genres: list[Genre] | None = []
@@ -21,5 +22,6 @@ class Film(UUIDMixin):
 
 class Films(UUIDMixin):
     title: str
+    file: str | None
     imdb_rating: float | None
     description: str | None = None

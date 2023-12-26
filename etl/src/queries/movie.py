@@ -10,7 +10,7 @@ from src.queries.settings import (
 
 class MovieQuery(BaseQuery):
     _query = f"""
-        SELECT film.id, film.rating as imdb_rating, film.title, film.description,
+        SELECT film.id, film.rating as imdb_rating, film.title, film.description, film.file,
         COALESCE(ARRAY_AGG(DISTINCT genre.name) FILTER ( WHERE genre IS NOT NULL ), array[]::varchar[]) as genre,
         COALESCE(ARRAY_AGG(DISTINCT person.full_name) FILTER (WHERE person_film.role = 'director'), array[]::varchar[]) as director,
         COALESCE(ARRAY_AGG(DISTINCT person.full_name) FILTER (WHERE person_film.role = 'actor'), array[]::varchar[]) as actors_names,

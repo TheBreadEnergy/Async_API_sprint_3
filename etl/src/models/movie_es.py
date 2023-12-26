@@ -15,6 +15,7 @@ class MovieES(EntityMixinES):
     title: str
     imdb_rating: Optional[float] = None
     genre: Optional[List[str]] = []
+    file: str | None = ""
     description: Optional[str] = None
     director: Optional[List[str]] = []
     actors_names: Optional[List[str]] = []
