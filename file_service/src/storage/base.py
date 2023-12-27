@@ -47,8 +47,4 @@ class MinioStorage(Storage):
             async for chunk in response.content.iter_chunked(32 * 1024):
                 yield chunk
 
-        return StreamingResponse(
-            content=s3_stream(),
-            media_type=file_type,
-            headers={"Content-Disposition": f"filename={filename}"},
-        )
+        return StreamingResponse(content=s3_stream(), media_type=file_type)
