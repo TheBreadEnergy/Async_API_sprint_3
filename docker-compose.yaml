@@ -11,6 +11,7 @@ services:
       - envs/.env.django
     expose:
       - "8000"
+    restart: unless-stopped
 
   film-api:
     build: filmwork_service
@@ -22,6 +23,20 @@ services:
       - envs/.env.api.films
     ports:
       - "8001:8000"
+    restart: unless-stopped
+
+  file-api:
+    build: file_service
+    image: app-file-api:dev
+    depends_on:
+      - redis
+      - postgres
+      - minio
+    env_file:
+      - envs/.env.files
+    ports:
+      - "8002:8000"
+    restart: unless-stopped
 
   redis-films:
     image: redis:latest
@@ -45,12 +60,16 @@ services:
     image: app-postgres
     env_file:
       - envs/.env.database
+    ports:
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
   redis:
     image: redis:latest
     restart: unless-stopped
+    ports:
+      - "6379:6379"
     volumes:
       - redis-data:/data
 
@@ -74,8 +93,9 @@ services:
       - proxy
       - redis
       - elastic
+    restart: unless-stopped
 
-  s3_storage:
+  minio:
     image: minio/minio:latest
     ports:
       - "9000:9000"
