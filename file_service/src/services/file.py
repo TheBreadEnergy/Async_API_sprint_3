@@ -45,7 +45,7 @@ class FileService(FileServiceABC):
     async def upload_file(self, bucket_name: str, file: UploadFile) -> File:
         short_name = shortuuid.uuid()
         _: FileUploadDto = await self._storage.save(
-            file=file, bucket=bucket_name, path=file.filename
+            file=file, bucket=bucket_name, path=short_name
         )
         file_meta = FileCreateDto(
             filename=file.filename,
@@ -64,7 +64,7 @@ class FileService(FileServiceABC):
 
         return await self._storage.get_file(
             bucket=bucket_name,
-            path=file_meta.url,
+            path=file_meta.short_name,
             filename=file_meta.filename,
             file_type=file_meta.file_type,
         )
