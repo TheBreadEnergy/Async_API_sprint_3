@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     )
     version: str = Field("1.0.0", alias="VERSION", env="VERSION")
     redis_host: str = Field("127.0.0.1", alias="REDIS_HOST", env="REDIS_HOST")
-    redis_port: int = Field("6379", alias="REDIS_PORT", env="REDIS_PORT")
+    redis_port: int = Field(6379, alias="REDIS_PORT", env="REDIS_PORT")
     base_dir: str = os.path.dirname(os.path.abspath(__file__))
     postgres_conn: PostgresDsn = Field(
         "postgresql+psycopg://app:123qwe@localhost:5432/movie_database",

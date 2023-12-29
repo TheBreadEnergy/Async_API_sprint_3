@@ -1,35 +1,27 @@
 import random
-
-import pytest
 from unittest.mock import AsyncMock
 
+import pytest
 from faker import Faker
 from fastapi import UploadFile
-
 from src.models.file import File
-from src.services.file import FileService, FileMetaService
+from src.services.file import FileMetaService, FileService
 
 fake = Faker()
 
-mime_types = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/bmp",
-    "image/svg+xml"
-]
+mime_types = ["image/jpeg", "image/png", "image/gif", "image/bmp", "image/svg+xml"]
 
 
 def fake_file():
     file_mime_type = random.choice(mime_types)
     return File(
         id=fake.uuid4(),
-        filename=fake.file_name(category=None, extension=file_mime_type.split('/')[-1]),
+        filename=fake.file_name(category=None, extension=file_mime_type.split("/")[-1]),
         short_name=fake.uuid4(),
         size=fake.random_number(digits=6),
         file_type=file_mime_type,
         url=fake.url(),
-        created=fake.date_time_between(start_date="-5y", end_date="now")
+        created=fake.date_time_between(start_date="-5y", end_date="now"),
     )
 
 
@@ -41,7 +33,9 @@ async def test_upload_file():
 
     file_mime_type = random.choice(mime_types)
 
-    mock_upload_file.filename = fake.file_name(category=None, extension=file_mime_type.split('/')[-1])
+    mock_upload_file.filename = fake.file_name(
+        category=None, extension=file_mime_type.split("/")[-1]
+    )
     mock_upload_file.content_type = file_mime_type
     mock_upload_file.size = fake.random_number(digits=6)
 
